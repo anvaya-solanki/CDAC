@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import speech_recognition as sr
 import re
 from gtts import gTTS
@@ -57,7 +57,7 @@ def recognize_speech_from_mic(recognizer, microphone):
     with microphone as source:
         print("Listening... Please say something related to email and password:")
         try:
-            audio_data = recognizer.listen(source, timeout=25, phrase_time_limit=20)
+            audio_data = recognizer.listen(source, timeout=15, phrase_time_limit=20)
         except sr.WaitTimeoutError:
             return "Listening timed out. No speech detected.", None
 
@@ -68,7 +68,7 @@ def recognize_speech_from_mic(recognizer, microphone):
         
         cleaned_text = clean_text(text)
         email, password = extract_email_password(cleaned_text)
-        # print(email, password)
+        
         return email, password
     
     except sr.UnknownValueError:
@@ -96,6 +96,24 @@ def recognize_product(recognizer, microphone):
     except sr.RequestError as e:
         return f"Error with speech recognition service: {e}", None
     
+
+@app.route('/texttospeech', methods=['POST'])
+def text_to_speech_summary():
+    data = request.get_json()
+
+    summary = data.get('summary', '')
+
+    if not summary:
+        return jsonify({'status': 'error', 'message': 'No summary provided.'}), 400
+
+    print('Received summary:', summary)
+
+    summary = summary.replace("\n", " ").replace("*", "-").replace("\\","").replace("-n", "").replace("n-", "")
+
+    # print(summary)
+    # speak_text(summary)
+
+    return jsonify({'status': 'success', 'message': 'Summary received successfully.'})
 
 
 @app.route('/getemailpassword', methods=['GET'])

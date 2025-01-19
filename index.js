@@ -66,7 +66,9 @@ const hitUrl = async (page, credentials) => {
 
     // Navigate to Amazon's sign-in page
     const signInSelector = '.nav-action-signin-button'
-    const href = await page.$eval(signInSelector, (element) => element.href)
+    // const href = await page.$eval(signInSelector, (element) => element.href)
+    const href =
+      'https://www.amazon.in/ap/signin?openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.in%2F%3Fref_%3Dnav_custrec_signin&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=inflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0'
     console.log('Sign-In href:', href)
 
     await page.goto(href, { waitUntil: 'networkidle2' })
